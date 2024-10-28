@@ -1,31 +1,25 @@
-name = 'Theme name'
+name = 'Monospace Web'
 license = 'MIT'
-licenselink = 'https://github.com/owner/repo/LICENSE'
-description = 'Theme description'
+licenselink = 'https://github.com/rfaulahber/monospace-web-hugo/LICENSE'
+description = 'Monospace Web for Hugo'
 
 # The home page of the theme, where the source can be found
-homepage = 'https://github.com/owner/repo'
+homepage = 'https://github.com/rfaulahber/monospace-web-hugo'
 
 # If you have a running demo of the theme
 demosite = 'https://owner.github.io/repo'
 
 # Taxonomy terms
-tags = ['blog', 'company']
-features = ['some', 'awesome', 'features']
-
-# If the theme has multiple authors
-authors = [
-  {name = 'Name of author', homepage = 'Website of author'},
-  {name = 'Name of author', homepage = 'Website of author'}
-]
+tags = ['monospace']
+features = ['monospace']
 
 # If the theme has a single author
 [author]
-  name = 'Your name'
-  homepage = 'Your website'
+  name = 'Ryan Faulhaber'
+  homepage = 'https://github.com/rfaulhaber'
 
 # If porting an existing theme
 [original]
-  author = 'Name of original author'
-  homepage = 'Website of original author'
-  repo = 'https://github.com/owner/repo'
+  author = 'Oskar Wickström'
+  homepage = 'https://wickstrom.tech/'
+  repo = 'https://github.com/owickstrom/the-monospace-web'

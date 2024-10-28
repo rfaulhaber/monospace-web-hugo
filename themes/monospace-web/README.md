@@ -1,7 +1,3 @@
-# Theme Name
+# Monospace Web
 
-## Features
-
-## Installation
-
-## Configuration
+Implements the [Monospace Web](https://owickstrom.github.io/the-monospace-web/) theme for Hugo sites.
