@@ -1,0 +1,37 @@
+{{- /*
+Image render hook.
+
+Two things it does that the default cannot:
+
+  - Emits intrinsic width/height for images that are page or global resources.
+    The stylesheet sets `img { width: 100% }`, so without them the browser has
+    no aspect ratio to reserve space with and the page reflows on load — which
+    also makes the grid script's padding calculation run against a stale layout.
+
+  - Promotes a standalone image with alt text to <figure> + <figcaption>, which
+    the stylesheet already styles. `.IsBlock` is only true when
+    `wrapStandAloneImageWithinParagraph` is false (set in the theme config);
+    otherwise Goldmark wraps the image in a <p>, and a <figure> inside a <p> is
+    invalid HTML.
+*/ -}}
+{{- $src := .Destination }}
+{{- $dims := "" }}
+{{- if not (urls.Parse $src).IsAbs }}
+  {{- with or (.Page.Resources.Get $src) (resources.Get $src) }}
+    {{- $src = .RelPermalink }}
+    {{- if eq .ResourceType "image" }}
+      {{- $dims = printf ` width="%d" height="%d"` .Width .Height }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
+{{- $title := "" }}
+{{- with .Title }}{{ $title = printf ` title=%q` . }}{{ end }}
+{{- $img := printf `<img src=%q alt=%q%s%s loading="lazy" decoding="async">`
+      $src .PlainText $dims $title }}
+
+{{- if and .IsBlock .PlainText -}}
+<figure>{{ $img | safeHTML }}<figcaption>{{ .Text }}</figcaption></figure>
+{{- else -}}
+{{ $img | safeHTML }}
+{{- end -}}

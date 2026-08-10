@@ -1,5 +1,63 @@
-baseURL = 'https://example.org/'
-languageCode = 'en-us'
-title = 'My New Hugo Site'
-theme = "monospace-web"
-themesDir = "../themes"
+baseURL = 'https://rfaulhaber.github.io/monospace-web-hugo/'
+locale = 'en-US'
+title = 'The Monospace Web'
+theme = 'monospace-web'
+themesDir = '../themes'
+
+enableRobotsTXT = true
+
+# Required site configuration. Hugo does not merge these keys from a theme, so
+# every site using monospace-web has to repeat them. See the README.
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.parser]
+      # Lets the image render hook emit <figure> + <figcaption>. With the Hugo
+      # default of true, a standalone image is wrapped in a <p> and .IsBlock is
+      # never true.
+      wrapStandAloneImageWithinParagraph = false
+    [markup.goldmark.renderer]
+      # The design leans on raw HTML in content: tables carrying width-min /
+      # width-auto, <figure><pre> diagrams, form grids.
+      unsafe = true
+  [markup.highlight]
+    # Emit Chroma classes rather than inline colours, so the stylesheet can
+    # render code in the theme's own monochrome palette.
+    noClasses = false
+    lineNumbersInTable = true
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 3
+
+[pagination]
+  pagerSize = 20
+
+[params]
+  subtitle = 'A minimalist design exploration, as a Hugo theme'
+  author = 'Ryan Faulhaber'
+  authorURL = 'https://github.com/rfaulhaber'
+  license = 'MIT'
+  description = 'A Hugo port of the-monospace-web by Oskar Wickström.'
+  dateFormat = '2006-01-02'
+  # The demo exists to show the grid, so the overlay toggle is on.
+  debugGrid = true
+  toc = true
+
+[[menus.main]]
+  name = 'Home'
+  pageRef = '/'
+  weight = 10
+
+[[menus.main]]
+  name = 'Docs'
+  pageRef = '/docs'
+  weight = 20
+
+[[menus.main]]
+  name = 'Posts'
+  pageRef = '/posts'
+  weight = 30
+
+[[menus.main]]
+  name = 'Tags'
+  pageRef = '/tags'
+  weight = 40

@@ -1,0 +1,59 @@
+{{- /*
+Contents of <head>.
+
+@context {page} . The current page.
+*/ -}}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+{{- $title := site.Title }}
+{{- if not .IsHome }}
+  {{- $title = printf "%s | %s" .Title site.Title }}
+{{- end }}
+<title>{{ $title }}</title>
+
+{{- $description := or .Description .Summary site.Params.description }}
+{{- with $description }}
+<meta name="description" content="{{ . | plainify | htmlUnescape | chomp }}">
+{{- end }}
+{{- with or .Params.author site.Params.author }}
+<meta name="author" content="{{ . }}">
+{{- end }}
+<link rel="canonical" href="{{ .Permalink }}">
+
+{{- /* Enough Open Graph for a link preview. Hugo's internal template is skipped
+       deliberately: it assumes image conventions this theme does not have. */}}
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:title" content="{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title | default site.Title }}{{ end }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:type" content="{{ if eq .Kind `page` }}article{{ else }}website{{ end }}">
+{{- with $description }}
+<meta property="og:description" content="{{ . | plainify | htmlUnescape | chomp }}">
+{{- end }}
+{{- if and (eq .Kind "page") (not .Date.IsZero) }}
+<meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+{{- end }}
+<meta name="twitter:card" content="summary">
+
+{{- /* RSS autodiscovery. */}}
+{{- range .AlternativeOutputFormats }}
+<link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ .Permalink }}" title="{{ $title }}">
+{{- end }}
+
+{{- with site.Params.style }}
+  {{- with .fontURL }}
+    {{- /* A stylesheet link, not an @import: an @import inside CSS serialises the
+           two requests and delays first paint by a full round trip. */}}
+    {{- with urls.Parse . }}
+<link rel="preconnect" href="{{ .Scheme }}://{{ .Host }}" crossorigin>
+    {{- end }}
+<link rel="stylesheet" href="{{ . }}">
+  {{- end }}
+{{- end }}
+{{ partialCached "head/css.html" . }}
+{{ partialCached "head/style-vars.html" . }}
+{{ partialCached "head/js.html" . }}
+{{- with site.Params.favicon }}
+<link rel="icon" href="{{ . | relURL }}">
+{{- end }}
+{{ hugo.Generator }}

@@ -1,0 +1,47 @@
+{{- /*
+Renders a list of pages, either as an aligned date/title table (default) or as
+headings with summaries.
+
+The table is the default because it is what a monospace grid is *for*: dates in
+a fixed-width column, titles filling the remainder, everything aligned without
+the browser having to guess. `width-min` shrink-wraps the date column and
+`width-auto` lets exactly one column absorb the slack — the stylesheet only
+supports one growing column per table.
+
+@context {page} page   The page providing the context (used for the list style).
+@context {pages} pages The pages to list.
+
+@example: {{ partial "post-list.html" (dict "page" . "pages" .Pages) }}
+*/ -}}
+
+{{- $pages := .pages }}
+{{- $page := .page }}
+{{- $style := or $page.Params.listStyle site.Params.listStyle "table" }}
+{{- $format := site.Params.dateFormat | default "2006-01-02" }}
+
+{{- if $pages }}
+  {{- if eq $style "summary" }}
+    {{- range $pages }}
+  <h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+      {{- if not .Date.IsZero }}
+  <p class="page-meta"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format $format }}</time></p>
+      {{- end }}
+  {{ .Summary }}
+    {{- end }}
+  {{- else }}
+  <table class="post-list">
+    <tbody>
+      {{- range $pages }}
+      <tr>
+        {{- if not .Date.IsZero }}
+        <td class="width-min post-date"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format $format }}</time></td>
+        {{- else }}
+        <td class="width-min post-date"></td>
+        {{- end }}
+        <td class="width-auto"><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></td>
+      </tr>
+      {{- end }}
+    </tbody>
+  </table>
+  {{- end }}
+{{- end }}

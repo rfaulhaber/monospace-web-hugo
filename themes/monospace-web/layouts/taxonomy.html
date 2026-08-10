@@ -1,0 +1,28 @@
+{{- /* A taxonomy listing (/tags/, /categories/): every term, with a count.
+
+       The generic list template would render each term as a heading with an
+       empty summary. A two-column table says the same thing in a fraction of
+       the vertical space and keeps the counts in a column you can scan. */ -}}
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+
+  {{- with .Pages }}
+  <table>
+    <thead>
+      <tr>
+        <th class="width-auto">Term</th>
+        <th class="width-min">Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{- range . }}
+      <tr>
+        <td class="width-auto"><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></td>
+        <td class="width-min">{{ len .Pages }}</td>
+      </tr>
+      {{- end }}
+    </tbody>
+  </table>
+  {{- end }}
+{{ end }}

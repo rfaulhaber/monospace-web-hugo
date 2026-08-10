@@ -1,0 +1,17 @@
+{{- /*
+Divides the horizontal space evenly between its children, in whole characters.
+
+    {{< grid >}}
+    <button>Reset</button>
+    <button>Save</button>
+    {{< /grid >}}
+
+Supports up to nine children — the stylesheet enumerates cell counts one by one,
+because `:has(> :last-child:nth-child(n))` cannot be parameterised. Pass
+`element="form"` to emit a <form> instead of a <div>.
+*/ -}}
+{{- $el := .Get "element" | default "div" -}}
+{{- $class := trim (printf "grid %s" (.Get "class" | default "")) " " -}}
+{{- printf `<%s class=%q>` $el $class | safeHTML -}}
+{{- .Inner -}}
+{{- printf `</%s>` $el | safeHTML -}}

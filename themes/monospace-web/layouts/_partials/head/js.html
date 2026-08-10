@@ -1,0 +1,21 @@
+{{- /*
+Loads the grid script.
+
+`defer` is required, not cosmetic: the script measures a cell by appending a
+probe element to document.body and reads the geometry of every img and video on
+the page. Executed from <head> without defer, document.body is still null.
+
+@context {page} . The current page.
+*/ -}}
+{{- with resources.Get "js/main.js" }}
+  {{- $opts := dict "minify" (not hugo.IsDevelopment) "target" "es2018" }}
+  {{- with . | js.Build $opts }}
+    {{- if hugo.IsDevelopment }}
+<script defer src="{{ .RelPermalink }}"></script>
+    {{- else }}
+      {{- with . | fingerprint }}
+<script defer src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous"></script>
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

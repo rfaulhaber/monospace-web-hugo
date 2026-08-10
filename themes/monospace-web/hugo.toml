@@ -1,23 +1,82 @@
-baseURL = 'https://example.org/'
-languageCode = 'en-US'
-title = 'My New Hugo Site'
-
-[[menus.main]]
-name = 'Home'
-pageRef = '/'
-weight = 10
-
-[[menus.main]]
-name = 'Posts'
-pageRef = '/posts'
-weight = 20
-
-[[menus.main]]
-name = 'Tags'
-pageRef = '/tags'
-weight = 30
+# Theme defaults. Hugo merges these into the site's own configuration, with the
+# site winning, so everything here is an overridable default.
+#
+# baseURL, title and menu entries do not belong here: a theme that ships them
+# injects them into every site that installs it, and site navigation starts
+# looking like a theme feature.
 
 [module]
   [module.hugoVersion]
+    # v0.146.0 introduced the template system this theme is written against
+    # (layouts/page.html, layouts/_partials/, layouts/_markup/).
     extended = false
-    min = "0.116.0"
+    min = "0.146.0"
+
+# NOTE: [markup] and [pagination] are deliberately absent.
+#
+# Hugo merges only a subset of root configuration keys from a theme — params and
+# menus among them, markup and pagination not. Settings placed here would be
+# silently discarded, so the three that this theme's templates want live in the
+# site's own configuration instead. See "Required site configuration" in the
+# README; example/hugo.toml has a working copy.
+
+[params]
+  # --- Masthead -------------------------------------------------------------
+  # subtitle    = "A minimalist design exploration"
+  # author      = "Ada Lovelace"
+  # authorURL   = "https://example.com"
+  # version     = "v1.0.0"
+  # license     = "MIT"
+  # description = "Fallback <meta name=description> for pages without one."
+  # favicon     = "/favicon.ico"   # omit to rely on /favicon.ico auto-discovery
+
+  # Show an "Updated" row in the masthead, using the site's last content change.
+  showUpdated = true
+  # Show "updated <date>" under a page title when Lastmod is after Date.
+  showLastmod = false
+
+  # --- Content --------------------------------------------------------------
+  # Go layout string, or a Hugo token such as ":date_long".
+  dateFormat = "2006-01-02"
+  # "table" aligns dates and titles in columns; "summary" uses headings and
+  # excerpts. Overridable per page with `listStyle` in front matter.
+  listStyle = "table"
+  # Section the home page lists. Falls back to all regular pages if empty.
+  mainSection = "posts"
+  homePostCount = 10
+  # homePostsHeading = "Posts"
+
+  # Render a table of contents on every page. Per page: `toc = true`.
+  toc = false
+  tocTitle = "Contents"
+
+  # Footer markdown. Replaces the default copyright line.
+  # footer = "Built with [Hugo](https://gohugo.io)."
+  # copyrightYear = 2024
+
+  # --- Debugging ------------------------------------------------------------
+  # Adds a "Debug mode" checkbox that overlays the character grid and flags any
+  # element whose top edge is off it. Invaluable when writing custom CSS.
+  debugGrid = false
+
+  # --- Appearance -----------------------------------------------------------
+  # Emitted as CSS custom property overrides; anything left unset keeps the
+  # stylesheet default. Light and dark are independent — setting one does not
+  # disturb the other.
+  [params.style]
+    # fontFamily      = '"JetBrains Mono", monospace'
+    # fontURL         = "https://fonts.example.com/jetbrains-mono.css"
+    # lineHeight      = "1.20rem"
+    # borderThickness = "2px"
+    # pageWidth       = "80ch"
+    # [params.style.light]
+    #   text          = "#000"
+    #   textAlt       = "#666"
+    #   background    = "#fff"
+    #   backgroundAlt = "#eee"
+    # [params.style.dark]
+    #   text          = "#fff"
+    #   textAlt       = "#aaa"
+    #   background    = "#000"
+    #   backgroundAlt = "#111"
+

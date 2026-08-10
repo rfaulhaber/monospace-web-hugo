@@ -1,0 +1,49 @@
+{{- /*
+Emits CSS custom property overrides from site params, so the stylesheet itself
+stays a clean copy of upstream.
+
+Colour overrides are wrapped in prefers-color-scheme queries rather than written
+to a bare :root. main.css sets its dark palette inside @media
+(prefers-color-scheme: dark); a bare :root rule emitted after it would win in
+*both* schemes, so overriding only the light palette would silently break dark
+mode. Matching the query the value belongs to keeps each scheme independent.
+
+@context {page} . The current page.
+*/ -}}
+{{- $style := site.Params.style }}
+{{- if $style }}
+  {{- $root := slice }}
+  {{- range $key, $prop := (dict "fontFamily" "--font-family" "lineHeight" "--line-height" "borderThickness" "--border-thickness" "pageWidth" "--page-width") }}
+    {{- with index $style $key }}
+      {{- $root = $root | append (printf "%s: %s;" $prop .) }}
+    {{- end }}
+  {{- end }}
+
+  {{- $palette := dict "text" "--text-color" "textAlt" "--text-color-alt" "background" "--background-color" "backgroundAlt" "--background-color-alt" }}
+  {{- $schemes := slice }}
+  {{- range $scheme := slice "light" "dark" }}
+    {{- $decls := slice }}
+    {{- with index $style $scheme }}
+      {{- $colors := . }}
+      {{- range $key, $prop := $palette }}
+        {{- with index $colors $key }}
+          {{- $decls = $decls | append (printf "%s: %s;" $prop .) }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+    {{- with $decls }}
+      {{- $schemes = $schemes | append (dict "scheme" $scheme "decls" .) }}
+    {{- end }}
+  {{- end }}
+
+  {{- if or $root $schemes }}
+<style>
+    {{- with $root }}
+:root { {{ delimit . " " }} }
+    {{- end }}
+    {{- range $schemes }}
+@media (prefers-color-scheme: {{ .scheme }}) { :root { {{ delimit .decls " " }} } }
+    {{- end }}
+</style>
+  {{- end }}
+{{- end }}

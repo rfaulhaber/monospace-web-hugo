@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="{{ site.Language.Lang }}"{{ with site.Params.languageDirection }} dir="{{ . }}"{{ end }}>
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body>
+  <header>
+    {{ partial "masthead.html" . }}
+  </header>
+  <main>
+    {{ block "main" . }}{{ end }}
+  </main>
+  <footer>
+    {{ partial "footer.html" . }}
+  </footer>
+  {{- if site.Params.debugGrid }}
+  <div class="debug-grid"></div>
+  {{- end }}
+</body>
+</html>

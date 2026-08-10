@@ -1,0 +1,14 @@
+{{- /* Section listings, and the fallback for any list kind without a more
+       specific template. Page size comes from `pagination.pagerSize`. */ -}}
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+  {{- with .Params.subtitle }}
+  <p class="subtitle">{{ . }}</p>
+  {{- end }}
+
+  {{ .Content }}
+
+  {{- $paginator := .Paginate .Pages }}
+  {{ partial "post-list.html" (dict "page" $ "pages" $paginator.Pages) }}
+  {{ partial "pagination.html" $ }}
+{{ end }}

@@ -1,0 +1,25 @@
+{{- /*
+Renders pagination controls, if the page is paginated.
+
+@context {page} . The current page.
+*/ -}}
+{{- $p := .Paginator }}
+{{- if gt $p.TotalPages 1 }}
+<nav class="pagination" aria-label="Pagination">
+  <ul>
+    {{- with $p.Prev }}
+    <li><a href="{{ .URL }}" rel="prev">&larr; Prev</a></li>
+    {{- end }}
+    {{- range $p.Pagers }}
+      {{- if eq . $p }}
+    <li><span aria-current="page">{{ .PageNumber }}</span></li>
+      {{- else }}
+    <li><a href="{{ .URL }}">{{ .PageNumber }}</a></li>
+      {{- end }}
+    {{- end }}
+    {{- with $p.Next }}
+    <li><a href="{{ .URL }}" rel="next">Next &rarr;</a></li>
+    {{- end }}
+  </ul>
+</nav>
+{{- end }}

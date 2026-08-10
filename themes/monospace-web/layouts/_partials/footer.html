@@ -1,0 +1,19 @@
+{{- /*
+Site footer.
+
+Override by setting params.footer (markdown is rendered), or by copying this
+file to layouts/_partials/footer.html in your own site.
+
+@context {page} . The current page.
+*/ -}}
+{{- with site.Params.footer }}
+  {{- . | markdownify }}
+{{- else }}
+  {{- $owner := or site.Params.author site.Title }}
+  {{- $start := site.Params.copyrightYear | default now.Year }}
+  {{- $range := printf "%v" $start }}
+  {{- if ne (printf "%v" $start) (printf "%v" now.Year) }}
+    {{- $range = printf "%v-%v" $start now.Year }}
+  {{- end }}
+  <p>&copy; {{ $range }} {{ $owner }}</p>
+{{- end }}

@@ -1,24 +1,20 @@
 name = 'Monospace Web'
 license = 'MIT'
-licenselink = 'https://github.com/rfaulahber/monospace-web-hugo/LICENSE'
-description = 'Monospace Web for Hugo'
+licenselink = 'https://github.com/rfaulhaber/monospace-web-hugo/blob/main/LICENSE'
+description = 'A Hugo port of the-monospace-web: everything aligned to a monospace character grid.'
 
-# The home page of the theme, where the source can be found
-homepage = 'https://github.com/rfaulahber/monospace-web-hugo'
+homepage = 'https://github.com/rfaulhaber/monospace-web-hugo'
+demosite = 'https://rfaulhaber.github.io/monospace-web-hugo/'
 
-# If you have a running demo of the theme
-demosite = 'https://owner.github.io/repo'
+min_version = '0.146.0'
 
-# Taxonomy terms
-tags = ['monospace']
-features = ['monospace']
+tags = ['monospace', 'minimal', 'blog', 'dark mode', 'responsive', 'no javascript frameworks']
+features = ['monospace', 'grid', 'dark mode', 'rss', 'taxonomies', 'table of contents', 'syntax highlighting']
 
-# If the theme has a single author
 [author]
   name = 'Ryan Faulhaber'
   homepage = 'https://github.com/rfaulhaber'
 
-# If porting an existing theme
 [original]
   author = 'Oskar Wickström'
   homepage = 'https://wickstrom.tech/'

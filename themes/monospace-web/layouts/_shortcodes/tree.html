@@ -1,0 +1,27 @@
+{{- /*
+Renders a nested markdown list as an ASCII tree. Call it with the percent
+delimiters, not angle brackets, so the body is parsed as markdown:
+
+    {{% tree %}}
+    - **nvme0n1p2**
+        - usr
+            - local
+            - bin
+        - tmp
+    {{% /tree %}}
+
+The class has to land on the list Goldmark produces, and a shortcode cannot
+reach into that, so it is patched onto the opening tag afterwards. The
+alternative — wrapping the list in a <div class="tree"> — would match
+`.tree ul li` against the outermost items too and draw connector lines off the
+root, which is not the upstream look.
+*/ -}}
+{{- $inner := .Inner | .Page.RenderString (dict "display" "block") -}}
+{{- $inner = $inner | strings.TrimSpace -}}
+{{- if hasPrefix $inner "<ul>" -}}
+  {{- printf `<ul class="tree">%s` (strings.TrimPrefix "<ul>" $inner) | safeHTML -}}
+{{- else if hasPrefix $inner "<ol>" -}}
+  {{- printf `<ol class="tree">%s` (strings.TrimPrefix "<ol>" $inner) | safeHTML -}}
+{{- else -}}
+  {{- errorf "shortcode %q in %s: expected the body to be a markdown list. Use the percent-delimiter form so the body is rendered as markdown." .Name .Position -}}
+{{- end -}}

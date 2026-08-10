@@ -1,0 +1,30 @@
+{{- /* The home page: _index.md content, then the most recent posts.
+
+       Listing is restricted to one section rather than ranging over
+       site.RegularPages, which would sweep in every standalone page — /about,
+       /colophon — alongside the posts. Sites with no `posts` section fall back
+       to everything, which is the only sensible reading of "recent" there. */ -}}
+{{ define "main" }}
+  {{ .Content }}
+
+  {{- $section := site.Params.mainSection | default "posts" }}
+  {{- $pages := where site.RegularPages "Section" $section }}
+  {{- if not $pages }}
+    {{- $pages = site.RegularPages }}
+  {{- end }}
+  {{- $limit := site.Params.homePostCount | default 10 }}
+  {{- $shown := $pages }}
+  {{- if and (gt $limit 0) (gt (len $pages) $limit) }}
+    {{- $shown = first $limit $pages }}
+  {{- end }}
+
+  {{- with $shown }}
+  <h2>{{ or site.Params.homePostsHeading "Posts" }}</h2>
+  {{ partial "post-list.html" (dict "page" $ "pages" .) }}
+    {{- if lt (len $shown) (len $pages) }}
+      {{- with site.GetPage $section }}
+  <p><a href="{{ .RelPermalink }}">All {{ len $pages }} posts &rarr;</a></p>
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{ end }}

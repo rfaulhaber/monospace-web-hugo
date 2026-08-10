@@ -1,0 +1,69 @@
+{{- /*
+The site masthead: a table pairing the site title against a right-aligned block
+of metadata, as in the-monospace-web's demo page.
+
+A table is the right tool here rather than a nostalgic one. The metadata labels
+and values have to land on exact character columns and the whole thing has to
+reflow in character-sized steps; `width-min` / `width-auto` give the browser
+that instruction directly. Rows are built from whichever params are set, so the
+table stays valid when a site configures none of them.
+
+@context {page} . The current page.
+*/ -}}
+{{- $meta := slice }}
+{{- with site.Params.version }}
+  {{- $meta = $meta | append (dict "label" "Version" "value" .) }}
+{{- end }}
+{{- if site.Params.showUpdated }}
+  {{- with site.Lastmod }}
+    {{- if not .IsZero }}
+      {{- $updated := printf `<time datetime="%s">%s</time>` (.Format "2006-01-02") (.Format (site.Params.dateFormat | default "2006-01-02")) }}
+      {{- $meta = $meta | append (dict "label" "Updated" "value" ($updated | safeHTML)) }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- with site.Params.author }}
+  {{- $author := . }}
+  {{- with site.Params.authorURL }}
+    {{- $author = printf `<a href="%s"><cite>%s</cite></a>` . $author }}
+  {{- else }}
+    {{- $author = printf `<cite>%s</cite>` $author }}
+  {{- end }}
+  {{- $meta = $meta | append (dict "label" "Author" "value" ($author | safeHTML)) }}
+{{- end }}
+{{- with site.Params.license }}
+  {{- $meta = $meta | append (dict "label" "License" "value" .) }}
+{{- end }}
+
+<table class="header">
+  <tbody>
+    <tr>
+      <td class="width-auto" colspan="1" rowspan="{{ len $meta | default 1 }}">
+        <h1 class="title"><a href="{{ site.Home.RelPermalink }}">{{ site.Title }}</a></h1>
+        {{- with site.Params.subtitle }}
+        <span class="subtitle">{{ . }}</span>
+        {{- end }}
+      </td>
+      {{- if $meta }}
+        {{- with index $meta 0 }}
+      <th class="width-min">{{ .label }}</th>
+      <td class="width-min">{{ .value }}</td>
+        {{- end }}
+      {{- end }}
+    </tr>
+    {{- if gt (len $meta) 1 }}
+      {{- range after 1 $meta }}
+    <tr>
+      <th class="width-min">{{ .label }}</th>
+      <td class="width-min">{{ .value }}</td>
+    </tr>
+      {{- end }}
+    {{- end }}
+  </tbody>
+</table>
+
+{{- partial "menu.html" (dict "menuID" "main" "page" .) }}
+
+{{- if site.Params.debugGrid }}
+<label class="debug-toggle-label"><input type="checkbox" class="debug-toggle"> Debug mode</label>
+{{- end }}

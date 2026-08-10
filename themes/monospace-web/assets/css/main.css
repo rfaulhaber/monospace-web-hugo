@@ -1,10 +1,20 @@
-@import url('https://fonts.cdnfonts.com/css/jetbrains-mono-2');
-@import url('https://cdnjs.cloudflare.com/ajax/libs/hack-font/3.3.0/web/hack.min.css');
+/**
+ * Adapted from the-monospace-web by Oskar Wickström.
+ * Licensed under the MIT License
+ * (https://github.com/owickstrom/the-monospace-web/blob/main/LICENSE.md)
+ *
+ * Divergences from upstream are confined to the "HUGO THEME ADDITIONS" section
+ * at the bottom, plus three things here at the top: no @import of a webfont
+ * (see the `style.fontURL` param), a default system font stack, and
+ * --page-width. Everything between is upstream, so it stays easy to diff.
+ **/
 
 :root {
-  --font-family: "Hack", monospace;
+  --font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo,
+    Consolas, "DejaVu Sans Mono", monospace;
   --line-height: 1.20rem;
   --border-thickness: 2px;
+  --page-width: 80ch;
   --text-color: #000;
   --text-color-alt: #666;
   --background-color: #fff;
@@ -56,7 +66,7 @@ body {
   width: 100%;
   margin: 0;
   padding: var(--line-height) 2ch;
-  max-width: calc(min(80ch, round(down, 100%, 1ch)));
+  max-width: calc(min(var(--page-width), round(down, 100%, 1ch)));
   line-height: var(--line-height);
   overflow-x: hidden;
 }
@@ -312,7 +322,8 @@ input, button, textarea {
   -webkit-appearance: none;
 }
 
-input[type=checkbox] {
+input[type=checkbox],
+input[type=radio] {
   display: inline-grid;
   place-content: center;
   vertical-align: top;
@@ -320,11 +331,16 @@ input[type=checkbox] {
   height: var(--line-height);
   cursor: pointer;
 }
-input[type=checkbox]:checked:before {
+input[type=checkbox]:checked:before,
+input[type=radio]:checked:before {
   content: "";
   width: 1ch;
   height: calc(var(--line-height) / 2);
   background: var(--text-color);
+}
+input[type=radio],
+input[type=radio]:before {
+  border-radius: 100%;
 }
 
 button:focus, input:focus {
@@ -455,4 +471,228 @@ label input {
 
 .debug-toggle-label {
   text-align: right;
+}
+
+/* HUGO THEME ADDITIONS
+ *
+ * Everything above is upstream. Below are the elements a multi-page site needs
+ * that a single-page demo did not: block quotes, definition lists, post
+ * indexes, pagination, and syntax highlighting.
+ *
+ * The one rule that matters when extending this: every vertical measurement is
+ * a multiple of --line-height (halves are permitted, since the grid overlay
+ * checks against half-cells). Anything else knocks the rest of the page off the
+ * grid, which you can see for yourself with the debug toggle.
+ */
+
+:root {
+  /* Lets the UA style form controls, scrollbars and the canvas to match the
+   * palette the media query above selects. */
+  color-scheme: light dark;
+}
+
+/* Upstream right-aligns the last cell of every masthead row to push metadata to
+ * the margin. When a site configures no metadata at all, the title cell *is*
+ * the last cell, and would be dragged along with it. */
+.header td.width-auto {
+  text-align: left;
+}
+.header .title a {
+  text-decoration: none;
+}
+
+/* `width-min` is `width: 0%`, which invites the browser to wrap a metadata
+ * value onto a second line and cost the masthead a row. These cells are short
+ * by construction, so forbid it. */
+.header th,
+.header td.width-min {
+  white-space: nowrap;
+}
+
+/* The site menu, unlike the lists in content, reads as one horizontal line. */
+header nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 2ch;
+  margin: 0 0 var(--line-height);
+  padding: 0;
+  list-style: none;
+}
+header nav li {
+  margin: 0;
+}
+header nav .active {
+  font-weight: var(--font-weight-bold);
+}
+
+/* Present but inert unless params.debugGrid is set; without this it would still
+ * pick up a line of margin from the `* + *` rule. */
+.debug-grid {
+  margin: 0;
+}
+
+/* The render hook emits intrinsic width/height attributes so the browser can
+ * reserve space before the image loads. Those attributes are presentational
+ * hints, and upstream's `img { width: 100% }` leaves the height hint standing —
+ * which would letterbox the image inside a fixed-height box and desynchronise
+ * the grid script's padding maths. With height:auto the attributes instead
+ * supply an implicit aspect-ratio, which is what we actually wanted from them. */
+img, video {
+  height: auto;
+}
+
+/* A loose markdown list wraps each item's text in a <p>, which would otherwise
+ * take a full line and break the connector geometry. */
+.tree li > p {
+  margin: 0;
+}
+
+blockquote {
+  margin: var(--line-height) 0;
+  padding: 0 0 0 calc(2ch - var(--border-thickness));
+  border-left: var(--border-thickness) solid var(--text-color);
+}
+blockquote :last-child {
+  margin-bottom: 0;
+}
+
+dl {
+  margin: 0 0 var(--line-height);
+}
+dt {
+  font-weight: var(--font-weight-medium);
+}
+dd {
+  margin: 0 0 var(--line-height) 2ch;
+}
+
+abbr[title] {
+  text-decoration: underline dotted;
+  text-decoration-thickness: var(--border-thickness);
+  cursor: help;
+}
+
+mark {
+  background: var(--text-color);
+  color: var(--background-color);
+}
+
+kbd {
+  border: var(--border-thickness) solid var(--text-color);
+  padding: 0 calc(0.5ch);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Screen-reader-only text. Kept off the grid on purpose: it is never painted,
+ * so it must not consume a line. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.subtitle {
+  color: var(--text-color-alt);
+}
+
+/* Post indexes. A table keeps titles and dates in aligned columns, which is the
+ * whole point of committing to a monospace grid. */
+.post-list td {
+  vertical-align: top;
+}
+.post-list .post-date {
+  white-space: pre;
+}
+
+.page-meta {
+  display: block;
+  margin-bottom: calc(var(--line-height) * 2);
+  color: var(--text-color-alt);
+}
+
+.terms {
+  margin-top: calc(var(--line-height) * 2);
+}
+.terms ul {
+  display: inline;
+  padding: 0;
+  list-style: none;
+}
+.terms li {
+  display: inline;
+}
+.terms li:not(:last-child):after {
+  content: ", ";
+}
+
+.pagination ul {
+  display: flex;
+  gap: 1ch;
+  padding: 0;
+  list-style: none;
+}
+.pagination li {
+  margin: 0;
+}
+.pagination [aria-current="page"] {
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+}
+
+footer {
+  margin-top: calc(var(--line-height) * 2);
+  padding-top: var(--line-height);
+  border-top: var(--border-thickness) solid var(--text-color);
+  color: var(--text-color-alt);
+}
+
+/* Chroma syntax highlighting.
+ *
+ * Colour would fight the design, so tokens are distinguished by weight, italics
+ * and the two-step grey ramp the rest of the theme already uses. Enabled by
+ * `markup.highlight.noClasses = false` in the theme config; with the Hugo
+ * default of `true` these classes are never emitted and Chroma inlines its own
+ * colours instead. */
+.highlight pre {
+  margin: 0;
+}
+.chroma .lnt, .chroma .ln {
+  color: var(--text-color-alt);
+}
+.chroma .c, .chroma .ch, .chroma .cm, .chroma .c1, .chroma .cs,
+.chroma .cp, .chroma .cpf {
+  color: var(--text-color-alt);
+  font-style: italic;
+}
+.chroma .k, .chroma .kc, .chroma .kd, .chroma .kn, .chroma .kp,
+.chroma .kr, .chroma .kt {
+  font-weight: var(--font-weight-bold);
+}
+.chroma .nf, .chroma .nc, .chroma .nb {
+  font-weight: var(--font-weight-medium);
+}
+.chroma .s, .chroma .s1, .chroma .s2, .chroma .sb, .chroma .sc,
+.chroma .sd, .chroma .se, .chroma .sh, .chroma .si, .chroma .sx,
+.chroma .sr, .chroma .ss, .chroma .m, .chroma .mb, .chroma .mf,
+.chroma .mh, .chroma .mi, .chroma .il, .chroma .mo {
+  color: var(--text-color-alt);
+}
+.chroma .gd {
+  background: var(--background-color-alt);
+  text-decoration: line-through;
+}
+.chroma .gi {
+  background: var(--background-color-alt);
+  font-weight: var(--font-weight-medium);
+}
+.chroma .err {
+  text-decoration: underline wavy;
+}
+.chroma .hl {
+  background: var(--background-color-alt);
 }

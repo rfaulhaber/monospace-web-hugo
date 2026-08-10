@@ -1,0 +1,24 @@
+{{- /*
+Builds the stylesheet.
+
+reset.css must come first: main.css relies on it having already flattened
+browser defaults. Concatenating rather than @import-ing keeps it to one request
+and one fingerprint.
+*/ -}}
+{{- $sheets := slice }}
+{{- range slice "css/reset.css" "css/main.css" }}
+  {{- with resources.Get . }}
+    {{- $sheets = $sheets | append . }}
+  {{- else }}
+    {{- errorf "monospace-web: missing stylesheet %q" . }}
+  {{- end }}
+{{- end }}
+{{- with $sheets | resources.Concat "css/bundle.css" }}
+  {{- if hugo.IsDevelopment }}
+<link rel="stylesheet" href="{{ .RelPermalink }}">
+  {{- else }}
+    {{- with . | minify | fingerprint }}
+<link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
+    {{- end }}
+  {{- end }}
+{{- end }}

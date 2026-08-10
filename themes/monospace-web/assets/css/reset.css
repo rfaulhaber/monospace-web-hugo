@@ -1,0 +1,61 @@
+/**
+ * Derived from the Eric Meyer reset, v2.0 (public domain), as used by
+ * the-monospace-web. Obsolete elements have been dropped; the remaining
+ * declarations are unchanged.
+ *
+ * `font: inherit` is the load-bearing rule: every element takes the monospace
+ * family and the root font size unless main.css says otherwise. Sizes that
+ * survive here — a browser-default h1, say — would not be integer multiples of
+ * --line-height, and the grid would drift.
+ *
+ * Note that `margin` is deliberately not reset. Vertical rhythm comes from the
+ * `* + *` rule in main.css, which needs the cascade to stay intact.
+ */
+
+html, body, div, span, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strong, sub, sup, var,
+b, u, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+main, menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, main, menu, nav, section {
+  display: block;
+}
+
+body {
+  line-height: 1;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
